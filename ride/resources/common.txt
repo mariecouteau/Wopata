@@ -1,0 +1,339 @@
+*** Settings ***
+Library           OperatingSystem
+Library           String
+Library           Selenium2Library    run_on_failure=Nothing
+Library           HttpLibrary.HTTP
+Library           Collections
+Resource          business_keywords.txt
+Resource          content_common.txt
+Resource          user_common.txt
+
+*** Variables ***
+${webClient}      ${CURDIR}${/}binary${/}WebClient.exe
+${StorageREST_binary}    ${CURDIR}${/}binary${/}StorageSampleREST.exe
+${webClient_json}    ${CURDIR}${/}binary${/}request.json
+${StorageAccount}    devptlegrandupdate
+# ${StorageAccount}    intglegrandupdate
+${StorageKey}     3kZNYV2Tv6jf9zc9f+unFYJfKpz9xz3fCk3DcSrGZxGQvl+s/0mLAql4nDhcrrssBcEmbudLVYtjR3p9mjJeJA==
+# ${StorageKey}    b0Kl25Ayp6j8MQEG6vvaFuYAux9KGsqsvpY2GaCLtUELARe3sEVv4ebtOIbRPRXOox2gXKddvN2htukEbMHnNw==
+${ContainerName}    packagecontainer
+${DrupalWebservices}    https://devptdrupal.cloudapp.net/webservices
+# ${DrupalWebservices}    https://intg-legranddrupal.cloudapp.net/webservices
+# ${DrupalWebservices}    https://test-legranddrupal.cloudapp.net/webservices
+${SchedulerwebServices}    https://devptscheduler.cloudapp.net/scheduler/update
+# ${SchedulerwebServices}    https://7ad4f81500f3467b9b6fd79c287d3373.cloudapp.net/scheduler/update
+# ${HOST}         https://test-legranddrupal.cloudapp.net
+${HOST}           https://devptdrupal.cloudapp.net
+# ${HOST}         https://intg-legranddrupal.cloudapp.net
+${BROWSER}        googlechrome
+${ROLE}           admin
+${Throbber}       div.throbber
+${BinaryContainerName}    binarycontainer
+${BinaryPath}     ${CURDIR}${/}data${/}
+
+*** Keywords ***
+Login as
+    [Arguments]    ${user}    ${language}=${EMPTY}    ${password}=${EMPTY}
+    ${status}=    Run Keyword And Return Status    Already connected    ${language}
+    Run Keyword If    ${status}    Log out    ${language}
+    Comment    Go to login page
+    Go To    ${HOST}/${language}/myspace
+    Comment    Login user
+    Run Keyword If    '${user}'=='Administrator Drupal'    Login    ${user_name_admin_lg}    ${user_pass_admin_lg}
+    Run Keyword If    '${user}'=='Administrator Legrand'    Login    ${user_name_admin_lg}    ${user_pass_admin_lg}
+    Run Keyword If    '${user}'=='Administrator Legrand 2'    Login    ${user_name_admin_lg2}    ${user_pass_admin_lg2}
+    Run Keyword If    '${user}'=='Developer Legrand'    Login    ${user_name_developer1}    ${user_pass_developer1}
+    Run Keyword If    '${user}'=='Developer Legrand 2'    Login    ${user_name_developer2}    ${user_pass_developer2}
+    Run Keyword If    '${user}'=='User Authenticate'    Login    ${user_name_test}    ${user_name_test}
+    Run Keyword If    '${user}'=='Manager Legrand'    Login    ${user_name_manager}    ${user_pass_manager}
+    Run Keyword If    '${user}'=='Installator'    Login    ${user_name_installator}    ${user_pass_installator}
+    Run Keyword If    '${user}'=='Installator 2'    Login    ${user_name_installator2}    ${user_pass_installator2}
+    Run Keyword Unless    '${password}'=='${EMPTY}'    Login    ${user}    ${password}
+
+Logout
+    [Arguments]    ${language}
+    Comment    Click Link    css=a[href*="/${language}/myspace/logout"]
+    Go To    ${HOST}/${language}/myspace/logout
+
+Acceptance Tests Setup
+    Comment    Start Selenium Server
+    Comment    Set Selenium Timeout    10
+    Comment    Set Selenium Speed    0.5
+    Open Browser    ${HOST}    browser=${BROWSER}
+    Maximize Browser Window
+    Run Keyword    Initializing content
+
+Acceptance Tests Teardown
+    # Le delete de tout le contenu peut potentiellement poser problème
+    Clean all content
+    Close All Browsers
+
+Login
+    [Arguments]    ${user}    ${password}
+    Input Text    css=input[type='text'][name='name']    ${user}
+    Input Password    css=input[type='password'][name='pass']    ${password}
+    Click Button    css=input[type='submit'][name='op'][id^='edit-submit']
+
+Clean all content
+    Login as    Administrator Drupal    en
+    Go to    ${HOST}/admin/content
+    Click Element    edit-reset
+    Comment    DELETE "All content"
+    # @{contents_type}=    Create List    Product    Installation    Software release    Product model    Group
+    @{contents_type}=    Create List    Product    Installation    Software release    Product model
+    : FOR    ${content_type}    IN    @{contents_type}
+    \    Select From List    edit-type    ${content_type}
+    \    Click Button    edit-submit-admin-views-node
+    \    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    \    ${status}=    Run Keyword And Return Status    Page Should Not Contain    No content available.
+    \    Run Keyword If    ${status}    Select Checkbox    //*[@id="views-form-admin-views-node-system-1"]/div/table[2]/thead/tr/th[1]/div/input
+    \    Run Keyword If    ${status}    Select From List    edit-operation    Delete
+    \    Run Keyword If    ${status}    Click Button    css=input[type='submit'][value='Execute']
+    \    Run Keyword If    ${status}    Click Button    css=input[type='submit'][value='Confirm']
+    \    sleep    10 sec
+    \    Run Keyword If    ${status}    Wait Until Page Contains    Performed Delete
+    Click Element    edit-reset
+    Comment    DELETE "User"
+    @{users}=    Create List    ${user_login1}    ${user_login2}
+    : FOR    ${user}    IN    @{users}
+    \    ${status}=    Run Keyword And Return Status    User exists    ${user}
+    \    Run Keyword If    ${status}    Delete User    ${user}
+    # Clear only groups that are created in tests
+    Click Element    edit-reset
+    Comment    DELETE "Group"
+    Go to    ${HOST}/admin/content
+    @{group_list}=    Create List    ${group_name1}    ${group_name2}    ${group_test}    ${group_test1}    ${group_test2}
+    : FOR    ${group}    IN    @{group_list}
+    \    Log    ${group}
+    \    Input Text    css=div.form-item-title input[type="text"]    ${group}
+    \    Select From List    edit-type    Group
+    \    Click Button    edit-submit-admin-views-node
+    \    ${status}=    Run Keyword And Return Status    Page Should Not Contain    No content available.
+    \    Run Keyword If    ${status}    Select Checkbox    //*[@id="views-form-admin-views-node-system-1"]/div/table[2]/thead/tr/th[1]/div/input
+    \    Run Keyword If    ${status}    Select From List    edit-operation    Delete
+    \    Run Keyword If    ${status}    Click Button    css=input[type='submit'][value='Execute']
+    \    Run Keyword If    ${status}    Click Button    css=input[type='submit'][value='Confirm']
+    \    sleep    10 sec
+    \    Run Keyword If    ${status}    Wait Until Page Contains    Performed Delete
+
+Already connected
+    [Arguments]    ${language}
+    Sleep    2 second
+    Page Should Contain Element    css=a[href*="/${language}/myspace/logout"]
+
+Get installation anonymous
+    [Arguments]    ${install_name}    ${first_install}
+    ${user}=    Set Variable    anonymous
+    ${pwd}=    Set Variable    anonymous
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}    ${first_install}
+    ${result}=    Run    ${webClient} url="${request}" method=GET login=${user} password=${pwd}
+    Log    ${result}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    @{retour}=    Create List    ${status}    ${message}
+    [Return]    @{retour}
+
+Get installation details anonymous
+    [Arguments]    ${install_name}    ${first_install}
+    ${user}=    Set Variable    anonymous
+    ${pwd}=    Set Variable    anonymous
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}    ${first_install}
+    ${result}=    Run    ${webClient} url="${request}" method=GET login=${user} password=${pwd}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    ${parsed_message}=    Parse Json    ${message}
+    ${msg}=    Get From Dictionary    ${parsed_message}    message
+    ${url}=    Get From Dictionary    ${parsed_message}    url
+    ${size}=    Get From Dictionary    ${parsed_message}    size
+    ${securityLevel}=    Get From Dictionary    ${parsed_message}    securityLevel
+    @{retour}=    Create List    ${status}    ${msg}    ${url}    ${size}    ${securityLevel}
+    [Return]    @{retour}
+
+Set installation authenticated
+    [Arguments]    ${install_name}    ${user}    ${pwd}
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}
+    ${result}=    Run    ${webClient} url="${request}" method=PUT login=${user} password=${pwd}
+    [Return]    ${result}
+
+Declare installation anonymous
+    [Arguments]    ${install_name}    @{products_json}
+    ${user}=    Set Variable    anonymous
+    ${pwd}=    Set Variable    anonymous
+    ${json}=    Create installation JSON    ${install_name}    @{products_json}
+    Create File    ${webClient_json}    ${json}
+    Log    ${user}
+    ${result}=    Run    ${webClient} url="${DrupalWebservices}/installation" method=POST bodyFile=${webClient_json} login=${user} password=${pwd}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    ${installation}=    Run Keyword If    '${status}'=='OK'    Evaluate    """${message}""".split('"installation_name":"')[1][:-2]
+    @{result}=    Create List    ${status}    ${installation}
+    [Return]    @{result}
+
+Create Product JSON
+    [Arguments]    ${mac_adress}    ${product_model}    ${software_release}
+    ${result}=    Catenate    SEPARATOR=    {"mac_address":"    ${mac_adress}    ","product_model":    ${product_model}
+    ...    ,"software_release":{"version":"    ${software_release}    "}}
+    [Return]    ${result}
+
+Create Product Model JSON
+    [Arguments]    ${reference}    ${brand}    ${platform}
+    ${result}=    Catenate    SEPARATOR=    {"reference":"    ${reference}    ","brand":"    ${brand}
+    ...    ","platform":"    ${platform}    "}
+    [Return]    ${result}
+
+Create installation JSON
+    [Arguments]    ${install_name}    @{products}
+    ${json}=    Catenate    SEPARATOR=    {"installation_name":"    ${install_name}    ","products":[
+    : FOR    ${product}    IN    @{products}
+    \    ${json}=    Catenate    SEPARATOR=    ${json}    ${product}    ,
+    ${json}=    Evaluate    '${json}'[:-1]
+    ${json}=    Catenate    SEPARATOR=    ${json}    ]}
+    [Return]    ${json}
+
+Click Label
+    [Arguments]    ${label}    ${index}=1
+    [Documentation]    Clicks label element which contains text ${label}.
+    ...    If there is more than one label with given text, specify index to match those labels.
+    Click Element    xpath=(//label[contains(., '${label}')])[${index}]
+
+Check priority installation
+    ${result} =    Run    ${StorageREST_binary} ${StorageAccount} ${StorageKey} ${ContainerName}
+    @{installs}=    Evaluate    """${result}""".split(' _ \ \ _ ')
+    Log Many    @{installs}
+
+Declare installator
+    [Arguments]    ${email}    ${password}
+    ${json}=    Create Installator JSON    ${email}    ${password}
+    Create File    ${webClient_json}    ${json}
+    ${result}=    Run    ${webClient} url="${DrupalWebservices}/installator" method=POST bodyFile=${webClient_json}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${msg}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    @{result}=    Create List    ${status}    ${msg}
+    [Return]    @{result}
+
+Create Installator JSON
+    [Arguments]    ${email}    ${password}
+    ${result}=    Catenate    SEPARATOR=    {"email":"    ${email}    ","password":"    ${password}
+    ...    "}
+    [Return]    ${result}
+
+Get Blob File Information
+    [Arguments]    ${filename}
+    ${result} =    Run    ${StorageREST_binary} ${StorageAccount} ${StorageKey} ${ContainerName}
+    ${status}    ${fileExists}=    Run Keyword And Ignore Error    Should Contain    ${result}    ${filename}
+    @{installations}=    Evaluate    """${result}""".split(" _ \ \ _ ")
+    @{installations2}=    Evaluate    """${result}""".split(" _ \ \ _ ")
+    : FOR    ${installation}    IN    @{installations}
+    \    Log    ${installation}
+    \    ${ok}=    Evaluate    '${filename}' in """${installation}"""
+    \    Run Keyword Unless    ${ok}    Remove Values From List    @{installations2}    ${installation}
+    ${installation}=    Get From List    @{installations2}    0
+    ${size}=    Evaluate    """${installation}""".split('|')[2].strip()
+    ${date}=    Evaluate    """${installation}""".split('|')[1].strip()
+    @{result}=    Create List    ${status}    ${date}    ${size}
+    [Return]    @{result}
+
+Delete User
+    [Arguments]    ${name}
+    ${user_url} =    Replace String    ${name}    .    -
+    ${user_url} =    Replace String    ${user_url}    @    -
+    Go to    ${HOST}/myspace/${user_url}/edit
+    Comment    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Comment    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Button    edit-cancel
+    Click Button    edit-submit
+    Wait Until Page Contains    has been deleted.
+
+Get next installation details anonymous
+    [Arguments]    ${install_name}
+    ${user}=    Set Variable    anonymous
+    ${pwd}=    Set Variable    anonymous
+    ${request}=    Catenate    SEPARATOR=/    ${DrupalWebservices}    installation    ${install_name}    update
+    ${result}=    Run    ${webClient} url="${request}" method=GET login=${user} password=${pwd}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    ${parsed_message}=    Parse Json    ${message}
+    @{retour}=    Create List    ${status}    ${parsed_message}
+    [Return]    @{retour}
+
+User exists
+    [Arguments]    ${name}
+    Go to    ${HOST}/admin/people
+    Click Element    edit-reset
+    Input Text    edit-name    ${name}
+    Click Button    edit-submit-admin-views-user
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Page Should Contain    ${name}
+
+Declare installation authenticated
+    [Arguments]    ${install_name}    ${user}    ${pwd}    @{products_json}
+    ${json}=    Create installation JSON    ${install_name}    @{products_json}
+    Create File    ${webClient_json}    ${json}
+    Log    ${user}
+    ${result}=    Run    ${webClient} url="${DrupalWebservices}/installation" method=POST bodyFile=${webClient_json} login=${user} password=${pwd}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    ${installation}=    Run Keyword If    '${status}'=='OK'    Evaluate    """${message}""".split('"installation_name":"')[1][:-2]
+    @{result}=    Create List    ${status}    ${installation}
+    [Return]    @{result}
+
+Get installation authenticated
+    [Arguments]    ${install_name}    ${first_install}    ${user}    ${pwd}
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}    ${first_install}
+    ${result}=    Run    ${webClient} url="${request}" method=GET login=${user} password=${pwd}
+    Log    ${result}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    @{retour}=    Create List    ${status}    ${message}
+    [Return]    @{retour}
+
+Get installation details authenticated
+    [Arguments]    ${install_name}    ${first_install}    ${user}    ${pwd}
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}    ${first_install}
+    ${result}=    Run    ${webClient} url="${request}" method=GET login=${user} password=${pwd}
+    ${status}=    Evaluate    """${result}""".split(' _ \ \ _ ')[0].split(' = ')[1]
+    ${message}=    Evaluate    """${result}""".split(' _ \ \ _ ')[1]
+    ${parsed_message}=    Parse Json    ${message}
+    ${msg}=    Get From Dictionary    ${parsed_message}    message
+    ${url}=    Get From Dictionary    ${parsed_message}    url
+    ${size}=    Get From Dictionary    ${parsed_message}    size
+    ${securityLevel}=    Get From Dictionary    ${parsed_message}    securityLevel
+    @{retour}=    Create List    ${status}    ${msg}    ${url}    ${size}    ${securityLevel}
+    [Return]    @{retour}
+
+Set installation anonymous
+    [Arguments]    ${install_name}
+    ${user}=    Set Variable    anonymous
+    ${pwd}=    Set Variable    anonymous
+    ${request}=    Catenate    SEPARATOR=/    ${SchedulerwebServices}    ${install_name}
+    ${result}=    Run    ${webClient} url="${request}" method=PUT login=${user} password=${pwd}
+    [Return]    ${result}
+
+Acceptance Test Setup
+    ${status}=    Run Keyword And Return Status    Already connected    en
+    Run Keyword If    ${status}    Log out    en
+
+Acceptance Test Teardown
+    Comment    Acceptance Test Teardown
+    # Clean all content peut occasionner un probleme dans Drupal
+    Run Keyword If Test Failed    Clean all content
+    Run Keyword If Test Failed    Initializing content
+
+Initializing content
+    Login as    Administrator Drupal    en
+    Comment    Check project default
+    ${status}    ${value} =    Run Keyword And Ignore Error    Content should exist    ${project_default}    Project
+    Run Keyword If    '${status}' == 'FAIL'    Create Project    ${project_default}
+    Comment    Check group default
+    ${status}    ${value} =    Run Keyword And Ignore Error    Content should exist    ${group_default}    Group
+    Run Keyword If    '${status}' == 'FAIL'    Create Group    ${group_default}    Group default
+    Run Keyword If    '${status}' == 'FAIL'    Add member to a group    ${group_default}    ${group_member_default}
+    Comment    add installator to group installator
+    Run Keyword If    '${status}' == 'FAIL'    Add member to a group    ${group_default}    ${group_member_installator}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Content should exist    ${group_name1}    Group
+    Run Keyword If    '${status}' == 'FAIL'    Create Group    ${group_name1}    ${group_description1}
+    Run Keyword If    '${status}' == 'FAIL'    Add member to a group    ${group_name1}    ${group_member1}
+    Comment    Check group 2
+    ${status}    ${value} =    Run Keyword And Ignore Error    Content should exist    ${group_name2}    Group
+    Run Keyword If    '${status}' == 'FAIL'    Create Group    ${group_name2}    ${group_description2}
+    Run Keyword If    '${status}' == 'FAIL'    Add member to a group    ${group_name2}    ${group_member2}

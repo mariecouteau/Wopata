@@ -1,0 +1,39 @@
+*** Settings ***
+Library           String
+Library           AppiumLibrary
+Library           Process
+
+*** Variables ***
+${REMOTE_URL}     http://localhost:4723/wd/hub    # URL to appium server
+${PLATFORM_NAME_IOS}    iOS
+${PLATFORM_VERSION_IOS}    8.1
+${DEVICE_NAME_IOS}    iPhone Simulator
+${APP_LOCATION_IOS}    C:\Users\couteaum\Desktop\ride\test\ORmaster.app    # App directory
+${PLATFORM_NAME_ANDROID}    android
+${PLATFORM_VERSION_ANDROID}    4.2.2
+${DEVICE_NAME_ANDROID}    Android Simulator
+${APP_LOCATION_ANDROID}    C:\Users\couteaum\Desktop\ride\test\ORmaster.apk
+${WEB_URL}        http://euralis-web-staging.s3-website-eu-west-1.amazonaws.com/#/
+${BROWSER}        chrome
+
+*** Keywords ***
+Teardown
+    Close All Applications
+    Terminate All Processes
+
+Test Setup ios simulator
+    Start Process    appium &
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+
+Test Setup android simulator
+    Start Process    appium &
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+
+Test Setup web
+    Go To Url    ${WEB_URL}
+
+Test Setup
+    Go To Url    ${WEB_URL}
+    Start Process    appium &
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}

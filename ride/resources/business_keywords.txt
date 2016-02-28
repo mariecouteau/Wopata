@@ -1,0 +1,524 @@
+*** Settings ***
+Library           Selenium2Library    run_on_failure=Nothing
+Library           OperatingSystem
+Library           String
+Resource          content_common.txt
+
+*** Keywords ***
+Create Product Model
+    [Arguments]    ${name}    ${brand}    ${platform}    ${label}    ${description}    ${title_url}
+    ...    ${url}    ${filename}    ${label_productmodel}    ${category_1.0}    ${category_1.1}    ${groups_audience}
+    ...    @{product_model}
+    Go to    ${HOST}/node/add/product-model
+    Input Text    edit-field-productmodel-reference-und-0-value    ${name}
+    Select From List    edit-field-productmodel-brand-und    ${brand}
+    Input Text    edit-field-productmodel-platform-und-0-value    ${platform}
+    Input Text    edit-field-productmodel-label-und-0-value    ${label}
+    Input Text    edit-field-productmodel-description-und-0-value    ${description}
+    Input Text    edit-field-productmodel-support-link-und-0-title    ${title_url}
+    Input Text    edit-field-productmodel-support-link-und-0-url    ${url}
+    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${filename}
+    Run Keyword If    '${filename}'!='${EMPTY}'    Choose File    edit-field-productmodel-support-file-und-0-upload    ${filepath}
+    Run Keyword If    '${filename}'!='${EMPTY}'    Click Button    edit-field-productmodel-support-file-und-0-upload-button
+    Run Keyword If    '${filename}'!='${EMPTY}'    Run Keyword And Ignore Error    Wait Until Page Contains    ${filename}
+    Run Keyword If    '${label_productmodel}'!='${EMPTY}'    Input Text    edit-field-productmodel-support-file-und-0-description    ${label_productmodel}
+    : FOR    ${product}    IN    @{product_model}
+    \    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    #Sleep    3s
+    Sleep    15s
+    ${status-category_1.0}    ${value-category_1.0} =    Run Keyword And Ignore Error    Element Should Contain    edit-field-productmodel-category-und-0-tid-select-1    ${category_1.0}
+    Run Keyword If    '${status-category_1.0}' == 'PASS'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1    ${category_1.0}
+    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List By Value    css=select#edit-field-productmodel-category-und-0-tid-select-1    _add_new_
+    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Input Text    css=input.shs-term-name    ${category_1.0}
+    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Click Link    Save
+    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Sleep    2s
+    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1    ${category_1.0}
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    #Sleep    3s
+    Sleep    15s
+    ${status-category_1.1}    ${value-category_1.1} =    Run Keyword And Ignore Error    Element Should Contain    edit-field-productmodel-category-und-0-tid-select-2    ${category_1.1}
+    Run Keyword If    '${status-category_1.1}' == 'PASS'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    15s
+    Run Keyword If    '${status-category_1.1}' == 'PASS'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-2    ${category_1.1}
+    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List By Value    css=select#edit-field-productmodel-category-und-0-tid-select-2    _add_new_
+    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Input Text    css=input.shs-term-name    ${category_1.1}
+    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Click Link    Save
+    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-2    ${category_1.1}
+    Run Keyword If    '${groups_audience}'!='${EMPTY}'    Click Label    ${groups_audience}
+    Click Button    css=input[type='submit'][value='Save']
+    Wait Until Page Contains    Product model
+    # Create Product Model With Group
+    #    [Arguments]    ${name}    ${brand}    ${platform}    ${label}    ${description}
+    ...    # ${title_url}    ${url}    ${filename}    ${label_productmodel}    ${category_1.0}    ${category_1.1}
+    ...    # ${groups_audience}    @{product_model}
+    #    Go to    ${HOST}/node/add/product-model
+    #    Input Text    edit-field-productmodel-reference-und-0-value    ${name}
+    #    Select From List    edit-field-productmodel-brand-und    ${brand}
+    #    Input Text    edit-field-productmodel-platform-und-0-value    ${platform}
+    #    Input Text    edit-field-productmodel-label-und-0-value    ${label}
+    #    Input Text    edit-field-productmodel-description-und-0-value    ${description}
+    #    Input Text    edit-field-productmodel-support-link-und-0-title    ${title_url}
+    #    Input Text    edit-field-productmodel-support-link-und-0-url    ${url}
+    #    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${filename}
+    #    Run Keyword If    '${filename}'!='${EMPTY}'    Choose File    edit-field-productmodel-support-file-und-0-upload    ${filepath}
+    #    Run Keyword If    '${filename}'!='${EMPTY}'    Click Button    edit-field-productmodel-support-file-und-0-upload-button
+    #    Run Keyword If    '${filename}'!='${EMPTY}'    Run Keyword And Ignore Error    Wait Until Page Contains    ${filename}
+    #    Run Keyword If    '${label_productmodel}'!='${EMPTY}'    Input Text    edit-field-productmodel-support-file-und-0-description    ${label_productmodel}
+    #    : FOR    ${product}    IN    @{product_model}
+    #    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    #    #Sleep    3s
+    #    Sleep    15s
+    #    ${status-category_1.0}    ${value-category_1.0} =    Run Keyword And Ignore Error    Element Should Contain    edit-field-productmodel-category-und-0-tid-select-1    ${category_1.0}
+    #    Run Keyword If    '${status-category_1.0}' == 'PASS'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1
+    ...    # ${category_1.0}
+    #    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List By Value    css=select#edit-field-productmodel-category-und-0-tid-select-1
+    ...    # _add_new_
+    #    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Input Text    css=input.shs-term-name
+    ...    # ${category_1.0}
+    #    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Click Link    Save
+    #    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Sleep    2s
+    #    Run Keyword If    '${status-category_1.0}' == 'FAIL'    Run Keyword If    '${category_1.0}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1
+    ...    # ${category_1.0}
+    #    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    #    #Sleep    3s
+    #    Sleep    15s
+    #    ${status-category_1.1}    ${value-category_1.1} =    Run Keyword And Ignore Error    Element Should Contain    edit-field-productmodel-category-und-0-tid-select-2    ${category_1.1}
+    #    Run Keyword If    '${status-category_1.1}' == 'PASS'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    15s
+    #    Run Keyword If    '${status-category_1.1}' == 'PASS'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-2
+    ...    # ${category_1.1}
+    #    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List By Value    css=select#edit-field-productmodel-category-und-0-tid-select-2
+    ...    # _add_new_
+    #    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Input Text    css=input.shs-term-name
+    ...    # ${category_1.1}
+    #    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Click Link    Save
+    #    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    #    Run Keyword If    '${status-category_1.1}' == 'FAIL'    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-2
+    ...    # ${category_1.1}
+    #    Run Keyword If    '${groups_audience}'!='${EMPTY}'    Click Label    ${groups_audience}
+    #    Click Button    css=input[type='submit'][value='Save']
+    #    Wait Until Page Contains    Product model
+
+Delete Product Model
+    [Arguments]    ${name}    ${brand}    ${platform}    ${confirm}
+    ${product_url}=    Catenate    SEPARATOR=-    ${name}    ${brand}    ${platform}
+    ${product_url}=    Replace String    ${product_url}    ${SPACE}    -
+    ${product_url}=    Evaluate    '${product_url}'.lower()
+    Go to    ${HOST}/en/support/${product_url.lower()}
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Wait Until Page Contains Element    css=form.node-form input[type='submit'][value='Delete']
+    Click Button    css=form.node-form input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword If    ${confirm}    Click Button    css=form.confirmation input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword Unless    ${confirm}    Click Link    Cancel
+
+Product Model Should Exist
+    [Arguments]    ${title}
+    Go To    ${HOST}/en/admin/content
+    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${title}
+
+Product Model Should Not Exist
+    [Arguments]    ${title}
+    Go To    ${HOST}/en/admin/content
+    ${error_msg}=    Catenate    SEPARATOR=    Column #2 in table identified by 'xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]' should have contained text '    ${title}    '.
+    Run Keyword And Expect Error    ${error_msg}    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${title}
+
+Create Software Release
+    [Arguments]    ${name}    ${version}    ${binary}    ${admin_note}    ${installator_note}    ${product_note}
+    ...    ${checksum}    ${linked_software_release}    ${security_level}=normal    @{product_model}
+    Go to    ${HOST}/en/node/add/software-release
+    Input Text    edit-field-softrelease-name-und-0-value    ${name}
+    Comment    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${binary}
+    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${binary}
+    Run Keyword If    '${binary}' != '${EMPTY}'    Choose File    edit-field-softrelease-binary-und-0-upload    ${filepath}
+    Run Keyword If    '${binary}' != '${EMPTY}'    Click Button    edit-field-softrelease-binary-und-0-upload-button
+    Run Keyword And Ignore Error    Wait Until Page Contains    ${binary}
+    Input Text    edit-field-softrelease-version-und-0-value    ${version}
+    Select From List    edit-field-softrelease-securitylevel-und    ${security_level}
+    Select From List    edit-field-softrelease-checksum-und    ${checksum}
+    Input Text In Rich Editor    edit-field-softrelease-rnote-admin-und-0-value    ${admin_note}    edit-field-softrelease-rnote-admin-und-0-format--2
+    Input Text In Rich Editor    edit-field-softrelease-rnote-install-und-0-value    ${installator_note}    edit-field-softrelease-rnote-install-und-0-format--2
+    Input Text In Rich Editor    edit-field-softrelease-rnote-product-und-0-value    ${product_note}    edit-field-softrelease-rnote-product-und-0-format--2
+    : FOR    ${product}    IN    @{product_model}
+    \    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    Run Keyword Unless    '${linked_software_release}'==''    Enter the associated Software release    ${linked_software_release}
+    Click Button    css=input[type='submit'][value='Save']
+
+Enter the associated Product model
+    [Arguments]    ${product_model}
+    Click Link    css=div.field-widget-entityreference-view-widget a.field-add-more-submit
+    Sleep    5s
+    Wait Until Page Contains Element    css=div.view-select-product-model-relation
+    ${class}=    Replace String    ${product_model}    |    ${EMPTY}
+    ${class}=    Replace String    ${class}    ${SPACE}    -
+    # Research for product model in the popup window, input name
+    Input Text    css=div.form-item-title input[type=text]    ${product_model}
+    Click Button    css=div.views-submit-button input[value="Apply"]
+    Sleep    15s
+    # Select Checkbox    css=td.${class} input[type=checkbox]
+    Select Checkbox    css=td.views-field-entityreference-view-widget input[type=checkbox]
+    Click Button    css=input[value="Add items and close window"]
+    Sleep    15s
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=div.view-select-product-model-relation
+
+Enter the associated Software release
+    [Arguments]    ${linked_software_release}
+    Select From List    edit-field-softrelease-softdependency-und    ${linked_software_release}
+
+Modify Software Release
+    [Arguments]    ${name}    ${version}    ${admin_note}    ${installator_note}    ${product_note}    ${format}
+    ...    ${linked_software_release}    @{product_model}
+    ${version2} =    Replace String    ${version}    .    -
+    ${release_url}=    Catenate    SEPARATOR=-    ${name}    ${version2}
+    ${release_url}=    Evaluate    '${release_url}'.lower()
+    Go to    ${HOST}/en/software-release/${release_url}
+    Comment    On attend le lien Edit pour cliquer dessus
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Input Text    edit-field-softrelease-name-und-0-value    ${name}
+    Input Text    edit-field-softrelease-version-und-0-value    ${version}
+    Run Keyword And Ignore Error    Select From List    edit-field-softrelease-checksum-und    ${format}
+    Input Text    edit-field-softrelease-rnote-admin-und-0-value    ${admin_note}
+    Input Text    edit-field-softrelease-rnote-install-en-0-value    ${installator_note}
+    Input Text    edit-field-softrelease-rnote-product-en-0-value    ${product_note}
+    : FOR    ${product}    IN    @{product_model}
+    \    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    Run Keyword Unless    '${linked_software_release}'==''    Enter the associated Software release    ${linked_software_release}
+    Click Button    css=input[type=submit][value=Save]
+
+Delete Software Release
+    [Arguments]    ${name}    ${version}    ${confirm}
+    ${version_rewrite} =    Replace String    ${version}    .    -
+    ${version_rewrite} =    Replace String    ${version_rewrite}    ${SPACE}    -
+    ${release_url}=    Catenate    SEPARATOR=-    ${name}    ${version_rewrite}
+    ${release_url}=    Evaluate    '${release_url}'.lower()
+    Go to    ${HOST}/en/software-release/${release_url}
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Wait Until Page Contains Element    css=form.node-form input[type='submit'][value='Delete']
+    Click Button    css=form.node-form input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword If    ${confirm}    Click Button    css=form.confirmation input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword Unless    ${confirm}    Click Link    Cancel
+
+Software Release Should Exist
+    [Arguments]    ${title}
+    Go To    ${HOST}/en/admin/content
+    Comment    Click Link    UPDATED
+    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${title}
+
+Software Release Should Not Exist
+    [Arguments]    ${title}
+    Go To    ${HOST}/en/admin/content
+    Comment    Click Link    UPDATED
+    ${error_msg}=    Catenate    SEPARATOR=    Column #2 in table identified by 'xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]' should have contained text '    ${title}    '.
+    Run Keyword And Expect Error    ${error_msg}    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${title}
+
+Check file is not listed on Azure blob
+    [Arguments]    ${filename}
+    ${result} =    Run    ${StorageREST_binary} ${StorageAccount} ${StorageKey} ${ContainerName}
+    Should Not Contain    ${result}    ${filename}
+
+Check file is uploaded on Azure blob
+    [Arguments]    ${filename}
+    ${result} =    Run    ${StorageREST_binary} ${StorageAccount} ${StorageKey} ${BinaryContainerName}
+    Should Contain    ${result}    ${filename}
+
+Input Text In Rich Editor
+    [Arguments]    ${locator}    ${text}    ${switch}
+    ${html_formatted'}=    Evaluate    'html=' in '${text}'
+    Comment    Run Keyword If    ${html_formatted'}    ${text}=    Replace String    ${text}    'html='
+    ...    ${EMPTY}
+    Input Text    ${locator}    ${text}
+    Run Keyword If    ${html_formatted'}    Select From List    ${switch}    HTML
+
+Installation is registered
+    [Arguments]    ${install_name}    @{products}
+    Login as    Administrator Drupal    en
+    Go To    ${HOST}/admin/content
+    Select From List    edit-type    Installation
+    Click Button    edit-submit-admin-views-node
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Table Column Should Contain    css=.views-table    2    ${install_name}
+    : FOR    ${product}    IN    @{products}
+    \    Product is linked to installation    ${product}    ${install_name}
+
+Installation is not registered
+    [Arguments]    ${install_name}    @{products}
+    Login as    Administrator Drupal    en
+    Go To    ${HOST}/en/admin/content
+    Input Text    edit-title    ${install_name}
+    Select From List    edit-type    Installation
+    Click Button    edit-submit-admin-views-node
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Page Should Contain    No content available.
+
+Installation is registered to installator
+    [Arguments]    ${install_name}    ${installator}
+    Login as    Administrator Drupal    en
+    Go To    ${HOST}/en/admin/content
+    Input Text    edit-title    ${install_name}
+    Select From List    edit-type    Installation
+    Click Button    edit-submit-admin-views-node
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Table Column Should Contain    css=.views-table    2    ${install_name}
+    Page Should Contain    ${installator}
+
+Installator has the installationn in his list
+    [Arguments]    ${install_name}    ${install_name_generate}    ${installator}    ${password}    @{products}
+    ${status}=    Run Keyword And Return Status    Already connected    en
+    Run Keyword If    ${status}    Log out    en
+    Login as    ${installator}    en    ${password}
+    ${install_url}=    Replace String    ${install_name}    :    -
+    ${install_url}=    Evaluate    '${install_url}'.lower()
+    ${user}=    Replace String    ${installator}    .    -
+    ${user}=    Replace String    ${user}    @    -
+    Go to    ${HOST}/en/myspace/${user}/${install_url}
+    Page Should Contain    ${install_name}
+    Installation is registered to installator    ${install_name}    ${installator}
+
+Product is linked to installation
+    [Arguments]    ${product}    ${installation}
+    ${product}=    Replace String    ${product}    :    -
+    Log    ${product}
+    Go to    ${HOST}/en/product/${product}
+    Page Should Contain    ${installation}
+
+Delete Product
+    [Arguments]    ${name}    ${confirm}
+    ${product_url}=    Replace String    ${name}    :    -
+    Go to    ${HOST}/en/product/${product_url}
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Button    css=input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword If    ${confirm}    Click Button    css=input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword Unless    ${confirm}    Click Link    Cancel
+
+Delete Installation
+    [Arguments]    ${name}    ${installator}    ${confirm}
+    ${install_url}=    Replace String    ${name}    :    -
+    ${install_url}=    Replace String    ${install_url}    ${SPACE}    -
+    ${install_url}=    Evaluate    '${install_url}'.lower()
+    ${installator} =    Replace String    ${installator}    .    -
+    ${installator} =    Replace String    ${installator}    @    -
+    Go to    ${HOST}/en/myspace/${installator}/${install_url}/edit
+    Click Button    css=input[type=submit][value=Delete]
+    Run Keyword And Ignore Error    Run Keyword If    ${confirm}    Click Button    css=input[type=submit][value=Delete]
+    Run Keyword And Ignore Error    Run Keyword Unless    ${confirm}    Click Link    Cancel
+
+Product Should Exist
+    [Arguments]    ${mac_adress}
+    Go To    ${HOST}/en/admin/content
+    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${mac_adress}
+
+Product Should Not Exist
+    [Arguments]    ${mac_adress}
+    Go To    ${HOST}/en/admin/content
+    ${error_msg}=    Catenate    SEPARATOR=    Column #2 in table identified by 'xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]' should have contained text '    ${mac_adress}    '.
+    Run Keyword And Expect Error    ${error_msg}    Table Column Should Contain    xpath=//*[@id="views-form-admin-views-node-system-1"]/div/table[2]    2    ${mac_adress}
+
+User Should Exist
+    [Arguments]    ${name}
+    Login as    Administrator Drupal    en
+    Go To    ${HOST}/en/admin/people
+    Input Text    edit-name    ${name}
+    Click Button    edit-submit-admin-views-user
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    ${user_url} =    Replace String    ${name}    .    -
+    ${user_url} =    Replace String    ${user_url}    @    -
+    Page Should Contain Element    css=a[href="/en/myspace/${user_url}"]
+
+Create Group
+    [Arguments]    ${name}    ${description}
+    Go to    ${HOST}/en/node/add/group
+    Input Text    edit-title    ${name}
+    Input Text    edit-field-group-description-und-0-value    ${description}
+    Click Button    css=input[type='submit'][value='Save']
+
+Delete Group
+    [Arguments]    ${name}    ${confirm}
+    ${group_url}=    Replace String    ${name}    ${SPACE}    -
+    ${group_url}=    Evaluate    '${group_url}'.lower()
+    Go to    ${HOST}/en/group/${group_url}
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Button    css=input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword If    ${confirm}    Click Button    css=input[type='submit'][value='Delete']
+    Run Keyword And Ignore Error    Run Keyword Unless    ${confirm}    Click Link    Cancel
+
+Add member to a group
+    [Arguments]    ${group_name}    ${member_name}
+    ${group_url}=    Replace String    ${group_name}    ${SPACE}    -
+    ${group_url}=    Evaluate    '${group_url}'.lower()
+    Go to    ${HOST}/en/group/${group_url}
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Wait Until Page Contains    Add people
+    Click Link    Add people
+    Wait Until Page Contains Element    edit-name
+    Input Text    edit-name    ${member_name}
+    Click Button    css=input[type='submit'][value='Add users']
+    Sleep    5s
+    Run Keyword And Ignore Error    Page Should Contain    ${member_name} has been added to the group ${group_name}.    loglevel=INFO
+
+Remove member to a group
+    [Arguments]    ${group_name}    ${group_member}
+    ${group_url}=    Replace String    ${group_name}    ${SPACE}    -
+    ${group_url}=    Evaluate    '${group_url}'.lower()
+    Go to    ${HOST}/en/group/${group_url}
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Wait Until Page Contains    People
+    Click Link    People
+    Input Text    edit-uid    ${group_member}
+    Click Button    css=input[type='submit'][value='Apply']
+    Sleep    2s
+    Select Checkbox    css=input.vbo-table-select-all.form-checkbox
+    Select From List    edit-operation    Remove from group
+    Run Keyword And Ignore Error    Click Button    css=input[type='submit'][value='Execute']
+    Run Keyword And Ignore Error    Click Button    css=input[type='submit'][value='Confirm']
+    Run Keyword And Ignore Error    Wait Until Page Contains    Performed Remove from group
+
+List member to a group
+    [Arguments]    ${group_name}
+    ${group_url}=    Replace String    ${group_name}    ${SPACE}    -
+    ${group_url}=    Evaluate    '${group_url}'.lower()
+    Go to    ${HOST}/en/group/${group_url}
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[3]/a
+    Wait Until Page Contains    People
+    Click Link    People
+
+Content should exist
+    [Arguments]    ${content_name}    ${content_type}
+    Go To    ${HOST}/en/admin/content
+    Click Button    edit-reset
+    Input Text    edit-title    ${content_name}
+    Select From List    edit-type    ${content_type}
+    Click Button    edit-submit-admin-views-node
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Comment    ${content_name}=    Replace String    ${content_name}    .    -
+    Comment    ${content_name}=    Replace String    ${content_name}    :    -
+    Comment    ${content_name}=    Replace String    ${content_name}    |    -
+    Comment    ${content_name}=    Replace String    ${content_name}    ${SPACE}    -
+    Comment    ${content_name}=    Evaluate    '${content_name}'.lower()
+    Comment    ${content_type}=    Replace String    ${content_type}    .    -
+    Comment    ${content_type}=    Replace String    ${content_type}    :    -
+    Comment    ${content_type}=    Replace String    ${content_type}    ${SPACE}    -
+    Comment    ${content_type}=    Evaluate    '${content_type}'.lower()
+    Element Should Be Visible    css=td.views-field-title a
+
+Content should not exist
+    [Arguments]    ${content_name}    ${content_type}
+    Go To    ${HOST}/en/admin/content
+    Click Button    edit-reset
+    Input Text    edit-title    ${content_name}
+    Select From List    edit-type    ${content_type}
+    Click Button    edit-submit-admin-views-node
+    Wait Until Keyword Succeeds    1min    2s    Page Should Not Contain Element    css=${Throbber}
+    Comment    ${content_name}=    Replace String    ${content_name}    .    -
+    Comment    ${content_name}=    Replace String    ${content_name}    :    -
+    Comment    ${content_name}=    Replace String    ${content_name}    ${SPACE}    -
+    Comment    ${content_name}=    Evaluate    '${content_name}'.lower()
+    Comment    ${content_type}=    Replace String    ${content_type}    .    -
+    Comment    ${content_type}=    Replace String    ${content_type}    :    -
+    Comment    ${content_type}=    Replace String    ${content_type}    ${SPACE}    -
+    Comment    ${content_type}=    Evaluate    '${content_type}'.lower()
+    Element Should Not Be Visible    css=td.views-field-title a
+
+Create Software Release associate to a group
+    [Arguments]    ${name}    ${version}    ${binary}    ${admin_note}    ${installator_note}    ${product_note}
+    ...    ${checksum}    ${linked_software_release}    ${security_level}=normal    @{product_model}
+    Go to    ${HOST}/en/node/add/software-release
+    Input Text    edit-field-softrelease-name-und-0-value    ${name}
+    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${binary}
+    Choose File    edit-field-softrelease-binary-und-0-upload    ${filepath}
+    Click Button    edit-field-softrelease-binary-und-0-upload-button
+    Run Keyword And Ignore Error    Wait Until Page Contains    ${binary}
+    Input Text    edit-field-softrelease-version-und-0-value    ${version}
+    Select From List    edit-field-softrelease-securitylevel-und    ${security_level}
+    Select From List    edit-field-softrelease-checksum-und    ${checksum}
+    Input Text In Rich Editor    edit-field-softrelease-rnote-admin-und-0-value    ${admin_note}    edit-field-softrelease-rnote-admin-und-0-format--2
+    Input Text In Rich Editor    edit-field-softrelease-rnote-install-und-0-value    ${installator_note}    edit-field-softrelease-rnote-install-und-0-format--2
+    Input Text In Rich Editor    edit-field-softrelease-rnote-product-und-0-value    ${product_note}    edit-field-softrelease-rnote-product-und-0-format--2
+    : FOR    ${product}    IN    @{product_model}
+    \    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    Run Keyword Unless    '${linked_software_release}'==''    Enter the associated Software release    ${linked_software_release}
+    Click Button    css=input[type='submit'][value='Save']
+    Wait Until Page Contains    Software release
+
+Create Project
+    [Arguments]    ${name}
+    Go to    ${HOST}/node/add/project
+    Input Text    edit-field-project-name-und-0-value    ${name}
+    Click Button    css=input[type='submit'][value='Save']
+    Wait Until Page Contains    Project
+
+Delete Project
+    [Arguments]    ${name}
+    Go to    ${HOST}/admin/content
+    Sleep    15s
+    Click Button    edit-reset
+    Input Text    edit-title    ${name}
+    Select From List    edit-type    Project
+    Click Button    edit-submit-admin-views-node
+    Page Should Contain    ${name}
+    Select Checkbox    div.form-item-views-bulk-operations-0 input[type=checkbox]
+    Select From List    edit-operation    Delete
+    Click Button    css=input[type='submit'][value='Execute']
+    Click Button    css=input[type='submit'][value='Confirm']
+    Page Should Contain    Performed Delete on 1 item.
+
+Create Administrator Legrand
+    [Arguments]    ${usr}    ${pwd}
+    Login as    Administrator Drupal    en
+    Go To    ${HOST}/en/admin/people
+    Wait Until Page Contains    Add user
+    Click Link    Add user
+    Input text    edit-name    ${usr}
+    Input text    edit-mail    ${usr}@legrand.fr
+    Input text    edit-pass-pass1    ${pwd}
+    Input Password    edit-pass-pass2    ${pwd}
+    Select Checkbox    edit-roles-4
+    Click Button    css=input[type='submit'][value='Create new account']
+
+Update Product Model
+    [Arguments]    ${name}    ${brand}    ${platform}    ${label}    ${description}    ${title_url}
+    ...    ${url}    ${filename}    ${label_productmodel}    ${category_1.0}    ${category_1.1}    @{product_model}
+    ${product_url}=    Catenate    SEPARATOR=-    ${name}    ${brand}    ${platform}
+    ${product_url}=    Replace String    ${product_url}    ${SPACE}    -
+    ${product_url}=    Evaluate    '${product_url}'.lower()
+    Go to    ${HOST}/en/support/${product_url}
+    Sleep    15s
+    Wait Until Page Contains Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Click Element    //ul[contains(@class,'tabs')]/li[2]/a
+    Input Text    edit-field-productmodel-reference-und-0-value    ${name}
+    Select From List    edit-field-productmodel-brand-und    ${brand}
+    Input Text    edit-field-productmodel-platform-und-0-value    ${platform}
+    Input Text    edit-field-productmodel-label-en-0-value    ${label}
+    Input Text    edit-field-productmodel-description-en-0-value    ${description}
+    Input Text    edit-field-productmodel-support-link-en-0-title    ${title_url}
+    Input Text    edit-field-productmodel-support-link-en-0-url    ${url}
+    ${status}    ${value} =    Run Keyword And Ignore Error    Page Should Contain    Remove
+    Run Keyword If    '${status}' == 'PASS'    Click Button    css=input[type='submit'][value='Remove']
+    Run Keyword If    '${status}' == 'PASS'    Wait Until Page Contains Element    edit-field-productmodel-support-file-en-0-upload-button
+    ${filepath}=    Catenate    SEPARATOR=    ${BinaryPath}    ${filename}
+    Run Keyword If    '${filename}'!='${EMPTY}'    Choose File    edit-field-productmodel-support-file-en-0-upload    ${filepath}
+    Run Keyword If    '${filename}'!='${EMPTY}'    Click Button    edit-field-productmodel-support-file-en-0-upload-button
+    Run Keyword If    '${filename}'!='${EMPTY}'    Run Keyword And Ignore Error    Wait Until Page Contains    ${filename}
+    Run Keyword If    '${label_productmodel}'!='${EMPTY}'    Input Text    edit-field-productmodel-support-file-en-0-description    ${label_productmodel}
+    : FOR    ${product}    IN    @{product_model}
+    \    Run Keyword Unless    '${product}'==''    Enter the associated Product model    ${product}
+    Sleep    3s
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1    ${category_1.0}
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List By Value    css=select#edit-field-productmodel-category-und-0-tid-select-1+select    _add_new_
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Input Text    css=input.shs-term-name    ${category_1.1}
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Click Link    Save
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Sleep    2s
+    Run Keyword If    '${category_1.1}'!='${EMPTY}'    Select From List    css=select#edit-field-productmodel-category-und-0-tid-select-1+select    ${category_1.1}
+    Click Button    css=input[type='submit'][value='Save']
+    Wait Until Page Contains    Product model

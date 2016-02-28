@@ -1,0 +1,343 @@
+*** Settings ***
+Suite Teardown    Teardown
+Test Teardown
+Library           Dialogs
+Library           AppiumLibrary
+Library           BuiltIn
+Library           String
+Library           OperatingSystem
+Library           Selenium2Library
+Library           HttpLibrary.HTTP
+Library           Collections
+Resource          ../resources/ressources.txt
+Library           Process
+
+*** Variables ***
+
+*** Test Cases ***
+LOCA_001_country choice_ios
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App is installed for the first time on the device
+    ...    WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    ...    THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser again
+    ...    THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master has been already use serveral times by the user
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser
+    ...    THEN the list of country page must not be displayed
+    [Tags]    ios
+    [Setup]    Test Setup ios simulator
+    #Nominal test case:
+    #GIVEN OR Master App is installed for the first time on the device
+    #WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    #THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    AppiumLibrary.Page Should Not Contain Element    back
+    AppiumLibrary.Click Element    name=France
+    #Alternate test case 1:
+    #GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    Close All Applications
+    #WHEN the user open the App or open OR Master web page via URL in a browser again
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+    #THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    #Alternate test case 2:
+    #GIVEN OR Master has been already use serveral times by the user
+    AppiumLibrary.Click Element    name=France
+    AppiumLibrary.Click Element    name=Alsace
+    AppiumLibrary.Click Element    name=Bas-Rhin
+    AppiumLibrary.Click Element    name=ES AKUSTIC
+    AppiumLibrary.Click Element    name=NON
+    Close All Applications
+    #WHEN the user open the App or open OR Master web page via URL in a browser
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+    #THEN the list of country page must not be displayed
+    Page Should Not Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_001_country choice_android
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App is installed for the first time on the device
+    ...    WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    ...    THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser again
+    ...    THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master has been already use serveral times by the user
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser
+    ...    THEN the list of country page must not be displayed
+    [Tags]    android
+    [Setup]    Test Setup android simulator
+    #Nominal test case:
+    #GIVEN OR Master App is installed for the first time on the device
+    #WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    #THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    AppiumLibrary.Page Should Not Contain Element    back
+    AppiumLibrary.Click Element    name=France
+    #Alternate test case 1:
+    #GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    Close All Applications
+    #WHEN the user open the App or open OR Master web page via URL in a browser again
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    #THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    #Alternate test case 2:
+    #GIVEN OR Master has been already use serveral times by the user
+    AppiumLibrary.Click Element    name=France
+    AppiumLibrary.Click Element    name=Alsace
+    AppiumLibrary.Click Element    name=Bas-Rhin
+    AppiumLibrary.Click Element    name=ES AKUSTIC
+    AppiumLibrary.Click Element    name=NON
+    Close All Applications
+    #WHEN the user open the App or open OR Master web page via URL in a browser
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    #THEN the list of country page must not be displayed
+    Page Should Not Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_001_country choice_web
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App is installed for the first time on the device
+    ...    WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    ...    THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser again
+    ...    THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master has been already use serveral times by the user
+    ...    WHEN the user open the App or open OR Master web page via URL in a browser
+    ...    THEN the list of country page must not be displayed
+    [Tags]    android
+    [Setup]    Test Setup web
+    #Nominal test case:
+    #GIVEN OR Master App is installed for the first time on the device
+    #WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    #THEN a list of country must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    Page Should Not Contain Button    name=validate
+    Page Should Not Contain Text    back
+    Selenium2Library.Click Element    name=France
+    #Alternate test case 1:
+    #GIVEN the user during the first use of OR master close the App or the brower without validated the country
+    Close All Browsers
+    #WHEN the user open the App or open OR Master web page via URL in a browser again
+    Go To Url    ${WEB_URL}
+    #THEN the list of country page must be displayed on the screen and the user must choose one of the country of the list (he cannot close the page)
+    Page Should Contain Text    choisissez un pays
+    #Alternate test case 2:
+    #GIVEN OR Master has been already use serveral times by the user
+    Selenium2Library.Click Element    name=France
+    Selenium2Library.Click Button    name=validate
+    Selenium2Library.Click Element    name=Alsace
+    Selenium2Library.Click Element    name=Bas-Rhin
+    Selenium2Library.Click Element    name=ES AKUSTIC
+    Selenium2Library.Click Element    name=NON
+    Selenium2Library.Click Button    name=validate
+    Close All Browsers
+    #WHEN the user open the App or open OR Master web page via URL in a browser
+    Go To Url    ${WEB_URL}
+    #THEN the list of country page must not be displayed
+    Page Should Not Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_002_country choice_ios
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    [Tags]    ios
+    [Setup]    Test Setup ios simulator
+    #Nominal test case:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    Page Should Contain Text    choisissez un pays
+    AppiumLibrary.Click Element    name=Espagne
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+    Page Should Contain Text    Espagne
+    AppiumLibrary.Click Element    name=Andalusia
+    AppiumLibrary.Click Element    name=Almeria
+    AppiumLibrary.Click Element    name=ES ANGELIC CL
+    AppiumLibrary.Click Button    name=Non
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+    Page Should Not Contain Text    Choississez un pays
+    #Alternate test case 1:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    AppiumLibrary.Click Element    name=France
+    AppiumLibrary.Click Element    name=back
+    Page Should Contain Text    Espagne
+    #Alternate test case 2:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_IOS}    ${PLATFORM_VERSION_IOS}    ${DEVICE_NAME_IOS}    ${APP_LOCATION_IOS}
+    Page Should Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_002_country choice_android
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    [Tags]    android
+    [Setup]    Test Setup android simulator
+    #Nominal test case:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    Page Should Contain Text    choisissez un pays
+    AppiumLibrary.Click Element    name=Espagne
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    Page Should Contain Text    Espagne
+    AppiumLibrary.Click Element    name=Andalusia
+    AppiumLibrary.Click Element    name=Almeria
+    AppiumLibrary.Click Element    name=ES ANGELIC CL
+    AppiumLibrary.Click Button    name=Non
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    Page Should Not Contain Text    Choississez un pays
+    #Alternate test case 1:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    AppiumLibrary.Click Element    name=France
+    AppiumLibrary.Click Element    name=back
+    Page Should Contain Text    Espagne
+    #Alternate test case 2:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    AppiumLibrary.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    Close All Applications
+    Open Application    ${REMOTE_URL}    ${PLATFORM_NAME_ANDROID}    ${PLATFORM_VERSION_ANDROID}    ${DEVICE_NAME_ANDROID}    ${APP_LOCATION_ANDROID}
+    Page Should Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_002_country choice_web
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    ...
+    ...    Alternate test case 1:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    ...
+    ...    Alternate test case 2:
+    ...    GIVEN OR Master App has already been used by the user
+    ...    WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    ...    THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    [Tags]    ios
+    [Setup]    Test Setup web
+    #Nominal test case:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    Selenium2Library.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can select another country. the new country is recorded only at the end of the country wizard.
+    Page Should Contain Text    choisissez un pays
+    Selenium2Library.Click Element    name=Espagne
+    Close All Browsers
+    Go To Url    ${WEB_URL}
+    Page Should Contain Text    Espagne
+    Selenium2Library.Click Element    name=Andalusia
+    Selenium2Library.Click Element    name=Almeria
+    Selenium2Library.Click Element    name=ES ANGELIC CL
+    Selenium2Library.Click Element    name=Non
+    Close All Browsers
+    Go To Url    ${WEB_URL}
+    Page Should Not Contain Text    Choississez un pays
+    #Alternate test case 1:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    Selenium2Library.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can return back too the main page. the original country selection keep recorded.
+    Selenium2Library.Click Element    name=France
+    Selenium2Library.Click Element    name=back
+    Page Should Contain Text    Espagne
+    #Alternate test case 2:
+    #GIVEN OR Master App has already been used by the user
+    #WHEN the user open the Application and click on the bouton (...), he can select the setting ''choose a country''
+    Selenium2Library.Click Element    name=...
+    #THEN \ a list of country must be displayed on the screen and the user can close the App. When he opens the application again,the country selection main \ page must be displayed.
+    Close All Browsers
+    Go To Url    ${WEB_URL}
+    Page Should Contain Text    choisissez un pays
+    [Teardown]    Teardown
+
+LOCA_003_country choice
+    [Documentation]    Nominal test case:
+    ...    GIVEN OR Master App is installed for the first time on the device
+    ...    WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    ...    THEN a list of country must be displayed on the screen and the list must not contain ''Other''
+    #Nominal test case:
+    #GIVEN OR Master App is installed for the first time on the device
+    #WHEN the user open the Application or open OR Master web page via URL in a browser for the first time
+    #THEN a list of country must be displayed on the screen and the list must not contain ''Other''
+
+LOCA_004_country choice
+    [Documentation]    Nominal test case:
+    ...    GIVEN the browser language setting is Français
+    ...    WHEN the user open the OR Master web page via URL in the browser
+    ...    THEN the main page must contain the word ''aperçu''
+    ...
+    ...    GIVEN the browser language setting is ''English''
+    ...    WHEN the user open the OR Master web page via URL in the browser
+    ...    THEN the main page must contain the word ''overview'
+    ...
+    #Nominal test case:
+    #GIVEN the browser language setting is Français
+    #WHEN the user open the OR Master web page via URL in the browser
+    #THEN the main page must contain the word ''aperçu''
+    #GIVEN the browser language setting is ''English''
+    #WHEN the user open the OR Master web page via URL in the browser
+    #THEN the main page must contain the word ''overview'
+
+Test Setup ios simulator
+    Test Setup ios simulator
+
+*** Keywords ***

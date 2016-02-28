@@ -1,0 +1,77 @@
+*** Variables ***
+${user_name_valtech}    viden@smile.fr
+${user_pass_valtech}    SmileToLegrand2015
+
+${user_name_admin_lg}    adminlg@legrand.fr
+${user_admin_lg}    adminlg
+${user_pass_admin_lg}    adminlg-pass
+
+${user_name_admin_lg2}    adminlg2@legrand.fr
+${user_admin_lg2}    adminlg2
+${user_pass_admin_lg2}    adminlg2-pass
+
+${user_name_developer1}    developer1@legrand.fr
+${user_developer1}    developer1
+${user_pass_developer1}    developer1-pass
+
+# ${user_name_developer1}    legrandadmin@legrand.fr
+# ${user_developer1}    legrandadmin
+# ${user_pass_developer1}    legrandadmin-pass
+
+${user_name_developer2}    developer2@legrand.fr
+${user_developer2}    developer2
+${user_pass_developer2}    developer2-pass
+
+# ${user_name_developer2}    legranddev@legrand.fr
+# ${user_developer2}    legranddev
+# ${user_pass_developer2}    legranddev-pass
+
+${user_name_manager}    manager@legrand.fr
+${user_pass_manager}    manager-pass
+
+${user_name_installator}    installator@legrand.fr
+${user_installator}    installator
+${user_pass_installator}    installator-pass
+${group_default}    Installator
+
+${user_name_installator2}    installator2@legrand.fr
+${user_installator2}    installator2
+${user_pass_installator2}    installator2-pass
+${group_default}    Installator2
+
+${user_name_test}    test@legrand.fr
+${user_pass_test}    testtesttest
+${group_member_default}    anonymous
+
+# ${group_member1}    legrandadmin
+# ${group_member2}    legranddev
+
+${group_member_dev1}    developer1
+${group_member_dev2}    developer2
+
+${group_member1}    developer1
+${group_member2}    developer2
+
+${group_name1}    Legrand Office
+${group_description1}    Description 1 pour un groupe
+${group_name2}    Legrand Office 2
+${group_description2}    Description 2 pour un groupe
+${group_test}    Groupe test 0
+${group_test1}    Groupe test 1
+${group_test_description}    Description test pour un groupe
+${group_test2}    Groupe test 2
+${group_test3}    Groupe test 3
+${group_test2_description}    Description test pour un groupe
+
+${group_developer1}    group-developer1
+${group_developer2}    group-developer2
+${group_product1}    group-product1
+${group_product2}    group-product2
+
+${user_email1}    john.doe@legrand.fr
+${user_login1}    john.doe
+${user_email2}    jane.doe@legrand.fr
+${user_login2}    jane.doe
+${user_password1}    testtest
+${user_password2}    testtest2
+${group_member_installator}    installator

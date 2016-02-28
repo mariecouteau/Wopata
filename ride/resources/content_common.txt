@@ -1,0 +1,106 @@
+*** Variables ***
+${product_model-category1}    CCTV
+${product_model-subcategory1}    Camera
+${product_model-category2}    Lighting
+${product_model-reference1}    ProductOne
+${product_model-brand1}    IA
+${product_model-platform1}    Windows
+${product_model-reference2}    ProductTwo
+${product_model-brand2}    DA
+${product_model-platform2}    Linux
+${product_model-reference3}    ProductThree
+${product_model-brand3}    HP
+${product_model-platform3}    MacOS
+${product_model-label}    voici un label au hasard
+${product_model-description}    ceci est une super description
+${product_model-url1}    http://www.legrand.fr
+${product_model-titleurl1}    Legrand website
+${product_model-url2}    http://www.valtech.fr
+${product_model-titleurl2}    Valtech website
+${product_model-url3}    http://www.google.fr
+${product_model-titleurl3}    Google website
+${product_model-filename1}    Fichier 1
+${product_model-file1}    file_test_1.pdf
+${product_model-filename2}    Fichier 2
+${product_model-file2}    file_test_2.pdf
+${product_model-filename3}    Fichier 3
+${product_model-file3}    file_test_3.pdf
+${software-release_binary1}    date-7.x-2.0.tar.gz
+${software-release_binary2}    date-7.x-2.1.tar.gz
+${software-release_binary3}    date-7.x-2.2.tar.gz
+${software-release_binary4}    date-7.x-2.3.tar.gz
+${software-release_binary5}    date-7.x-2.4.tar.gz
+${software-release_binary6}    date-7.x-2.5.tar.gz
+${software-release_binary7}    date-7.x-2.6.tar.gz
+${software-release_name1}    camera
+${software-release_version1}    187.098.345.87
+${software-release_version120}    1.2.0
+${software-release_version130}    1.3.0
+${software-release_version140}    1.4.0
+${software-release_release_note_admin1}    admin note
+${software-release_release_note_installator1}    install note
+${software-release_release_note_product1}    product note
+${software-release_checksum1}    crc32
+${software-release_security_level1}    normal
+${software-release_name2}    amplificateur
+${software-release_version2}    187.098.346.0
+${software-release_release_note_admin2}    admin note
+${software-release_release_note_installator2}    install note
+${software-release_release_note_product2}    product note
+${software-release_checksum2}    sha-1
+${software-release_security_level2}    high
+${software-release_name3}    alarme
+${software-release_version3}    200.0.0.54
+${software-release_release_note_admin3}    admin note
+${software-release_release_note_installator3}    install note
+${software-release_release_note_product3}    product note
+${software-release_checksum3}    crc32
+${software-release_security_level3}    normal
+${software-release_name4}    camera
+${software-release_version4}    200.0.1.22
+${software-release_release_note_admin4}    admin note
+${software-release_release_note_installator4}    install note
+${software-release_release_note_product4}    product note
+${software-release_checksum4}    crc32
+${software-release_security_level4}    normal
+${installation_name}    myFirstInstallation
+${installation_name2}    mySecondInstallation
+${installation_name3}    myThirdInstallation
+${project_default}    Project
+${software-release_bin}    date-7.x-2.0.bin
+${software-release_rar}    date-7.x-2.0.rar
+${software-release_zip}    date-7.x-2.0.zip
+${software-release_tar}    date-7.x-2.0.tar
+${software-release_fwz}    date-7.x-2.0.fwz
+${product_model-label2}    voici un deuxième label au hasard
+${product_model_centralunit-reference}    PM043302
+${product_model_centralunit-marque}    LG
+${product_model_centralunit-plateforme}    AA
+${product_model_areacontroller-reference}    PM043314
+${product_model_areacontroller-marque}    LG
+${product_model_areacontroller-plateforme}    AB
+${product_model_centralunit-label}    Central unit
+${product_model_areacontroller-label}    Area Controller
+${software-release-centralunit0-name}    V0centralunit
+${software-release-centralunit0-version}    0.5.2.0
+${software-release-centralunit1-name}    V1centralunit
+${software-release-centralunit1-version}    1.0.0.0
+${software-release-centralunit2-name}    V2centralunit
+${software-release-centralunit2-version}    1.5.0.0
+${software-release-centralunit3-name}    V3centralunit
+${software-release-centralunit3-version}    1.8.4.0
+${software-release-centralunit4-name}    V4centralunit
+${software-release-centralunit4-version}    3.0.0.0
+${software-release-areacontroller0-name}    V0Areacontroller
+${software-release-areacontroller0-version}    1.2.3.0
+${software-release-areacontroller1-name}    V1areacontroller
+${software-release-areacontroller1-version}    1.4.2.0
+${software-release-areacontroller2-name}    V2areacontroller
+${software-release-areacontroller2-version}    1.6.3.0
+${software-release-areacontroller3-name}    V3areacontroller
+${software-release-areacontroller3-version}    2.0.0.0
+${software-release_binary8}    date-7.x-2.7.tar.gz
+${software-release_binary9}    date-7.x-2.8.tar.gz
+${software-release_rar100}    file_tests_100mo.rar
+${software-release_fwz200}    file_tests_200mo.fwz
+${software-release_fwz210}    file_tests_210mo.fwz
